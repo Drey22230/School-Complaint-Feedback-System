@@ -1,59 +1,61 @@
 import { loginHandler } from "@/controllers/login.controller";
 import { NextRequest, NextResponse } from "next/server";
-import { loginRateLimiter } from "../../../lib//ratelimiter";
+import { loginRateLimiter } from "../../../lib/ratelimiter";
 
 export async function POST(request: NextRequest) {
   try {
-    const ip =
-      request.headers.get("x-forwarded-for") || "unknown";
+    const { email, password } = await request.json();
+
+    const forwardedFor = request.headers.get("x-forwarded-for");
+
+    const ip = forwardedFor
+      ? forwardedFor.split(",")[0].trim()
+      : request.headers.get("x-real-ip") || "unknown";
+
+    const rateLimitKey = `${ip}-${email}`;
 
     try {
-      await loginRateLimiter.consume(ip);
+      await loginRateLimiter.consume(rateLimitKey);
     } catch {
       return NextResponse.json(
         {
-          error:
-            "Too many login attempts. Please try again later.",
+          error: "Too many login attempts. Please try again later.",
         },
-        { status: 429 }
+        { status: 429 },
       );
     }
-
-    const { email, password } = await request.json();
 
     const result = await loginHandler(email, password);
 
     if (!result?.token) {
-      return NextResponse.json(
-        { error: "Invalid login" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Invalid login" }, { status: 401 });
     }
+
+    await loginRateLimiter.delete(rateLimitKey);
 
     const response = NextResponse.json(
       {
         message: "Login successful",
         user: result.user,
       },
-      { status: 200 }
+      { status: 200 },
     );
 
     response.cookies.set("token", result.token, {
       httpOnly: true,
       path: "/",
       sameSite: "lax",
-      secure: true,
+      secure: process.env.NODE_ENV === "production",
       maxAge: 60 * 60,
     });
 
     return response;
-
   } catch (error) {
     console.error(error);
 
     return NextResponse.json(
       { error: (error as Error).message },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
