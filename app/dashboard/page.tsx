@@ -209,7 +209,7 @@ export default function DashboardPage() {
       </div>
 
       <div className="overflow-x-auto rounded-xl border border-green-100 bg-white shadow-lg">
-        <table className="w-full text-sm">
+        <table className="min-w-full table-fixed text-sm">
           <thead className="bg-green-700 text-white">
             <tr>
               <th className="p-3 text-left">User</th>
@@ -234,12 +234,11 @@ export default function DashboardPage() {
 
                 <td className="p-3">{item.concern}</td>
 
-                <td className="p-3">
-                  <div className="max-h-32 max-w-xs overflow-y-auto whitespace-pre-wrap break-words text-gray-600">
+                <td className="p-3 text-gray-600">
+                  <div className="max-w-[300px] whitespace-pre-wrap break-words">
                     {item.description}
                   </div>
                 </td>
-
                 <td className="p-3">
                   {item.attachment_url ? (
                     isImage(item.attachment_url) ? (
