@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { HeaderProps } from "../../types/CH";
+import Profile from "../../../public/profile.png";
 export default function Header({
   title,
   subtitle,
@@ -44,8 +45,14 @@ export default function Header({
       </div>
 
       <div className="flex items-center gap-3 bg-green-50 border border-green-200 px-3 sm:px-4 py-2">
-        <div className="w-10 h-10 rounded-full bg-green-600 text-white flex items-center justify-center font-bold">
-          U
+        <div className="w-10 h-10 rounded-full bg-green-600 text-white flex items-center justify-center font-bold overflow-hidden">
+          <Image
+            src={Profile}
+            alt="Profile"
+            width={40}
+            height={40}
+            className="object-cover"
+          />
         </div>
 
         <div className="hidden sm:block">
