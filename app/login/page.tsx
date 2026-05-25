@@ -13,8 +13,7 @@ export default function Login() {
     password: "",
   });
 
-  const [loading,setLoadig] = useState(false);
-
+  const [loading, setLoading] = useState(false);
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
@@ -26,30 +25,39 @@ export default function Login() {
   const handlelogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const response = await fetch("/api/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
-    });
+    setLoading(true);
 
-    const data = await response.json();
+    try {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
 
-    if (!response.ok) {
-      alert(data.error || "Wrong credentials");
-      return;
-    }
+      const data = await response.json();
 
-    const role = data.user?.role;
+      if (!response.ok) {
+        alert(data.error || "Wrong credentials");
+        return;
+      }
 
-    if (!role) {
-      alert("No role found");
-      return;
-    }
+      const role = data.user?.role;
 
-    if (role === "admin") {
-      router.push("/dashboard");
-    } else {
-      router.push("/userdashboard");
+      if (!role) {
+        alert("No role found");
+        return;
+      }
+
+      if (role === "admin") {
+        router.push("/dashboard");
+      } else {
+        router.push("/userdashboard");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Something went wrong");
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -96,9 +104,10 @@ export default function Login() {
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition"
+            disabled={loading}
+            className="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? "Loging..." : "Login"}
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
 

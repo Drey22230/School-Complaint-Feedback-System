@@ -27,6 +27,8 @@ export default function Register() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    setLoading(true);
+
     try {
       const res = await fetch("/api/register", {
         method: "POST",
@@ -57,9 +59,10 @@ export default function Register() {
     } catch (error) {
       console.error(error);
       alert("Something went wrong");
+    } finally {
+      setLoading(false);
     }
   };
-
   return (
     <div className="min-h-screen flex items-center justify-center from-blue-100 to-gray-200 px-4">
       <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-xl">
@@ -126,7 +129,8 @@ export default function Register() {
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition"
+            disabled={loading}
+            className="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? "Registering..." : "Register"}
           </button>
