@@ -234,9 +234,10 @@ export default function DashboardPage() {
 
                 <td className="p-3">{item.concern}</td>
 
-                {/* DESCRIPTION */}
-                <td className="max-w-xs truncate p-3 text-gray-600">
-                  {item.description}
+                <td className="p-3">
+                  <div className="max-h-32 max-w-xs overflow-y-auto whitespace-pre-wrap break-words text-gray-600">
+                    {item.description}
+                  </div>
                 </td>
 
                 <td className="p-3">
