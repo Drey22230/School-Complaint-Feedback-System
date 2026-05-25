@@ -13,6 +13,8 @@ export default function Login() {
     password: "",
   });
 
+  const [loading,setLoadig] = useState(false);
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
@@ -96,7 +98,7 @@ export default function Login() {
             type="submit"
             className="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition"
           >
-            Login
+            {loading ? "Loging..." : "Login"}
           </button>
         </form>
 

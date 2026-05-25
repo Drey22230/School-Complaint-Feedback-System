@@ -15,6 +15,8 @@ export default function Register() {
     role: "student",
   });
 
+  const [loading, setLoading] = useState(false);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
@@ -126,7 +128,7 @@ export default function Register() {
             type="submit"
             className="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition"
           >
-            Register
+            {loading ? "Registering..." : "Register"}
           </button>
         </form>
 
